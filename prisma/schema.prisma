@@ -1,0 +1,40 @@
+// MeetSlot 데이터베이스 스키마
+// 이벤트(events)와 참여자 응답(responses) 두 테이블로 구성
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// 이벤트: 주최자가 생성한 미팅 일정 조율 단위
+model Event {
+  id        String   @id @default(cuid())
+  title     String                         // 이벤트 이름 (최대 100자)
+  dates     String                         // 선택된 날짜 목록 (JSON 직렬화된 string[])
+  startTime String                         // 시작 시간 (예: "09:00")
+  endTime   String                         // 종료 시간 (예: "18:00")
+  timezone  String   @default("Asia/Seoul") // 타임존
+  createdAt DateTime @default(now())
+
+  responses Response[] // 이 이벤트에 대한 참여자 응답 목록
+}
+
+// 참여자 응답: 각 참여자가 가능한 시간 슬롯을 기록
+model Response {
+  id        String   @id @default(cuid())
+  eventId   String
+  name      String                         // 참여자 이름 (최대 50자)
+  password  String   @default("")          // 응답 수정 시 본인 확인용 비밀번호 (선택 입력)
+  slots     String                         // 선택한 시간 슬롯 목록 (JSON 직렬화된 string[])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  // 같은 이벤트에서 이름 중복 방지 (중복 이름으로 재접속 시 응답 수정)
+  @@unique([eventId, name])
+}

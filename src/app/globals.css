@@ -1,0 +1,28 @@
+/* Pretendard 웹폰트 로드 (한국어 최적화) */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 라이트 모드 고정 - 미니멀 디자인 컨셉 */
+:root {
+  --background: #F8FAFC;
+  --foreground: #0F172A;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+/* 시간 그리드 드래그 선택 시 텍스트 선택 방지 */
+.select-none {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* 터치 디바이스에서 스크롤과 드래그 충돌 방지 */
+.touch-none {
+  touch-action: none;
+}
